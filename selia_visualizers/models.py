@@ -1,32 +1,27 @@
-from django.db import models
 import os
+
+from django.db import models
 from django.utils.translation import gettext_lazy as _
 
 from irekua_database.models import ItemType
-from irekua_database.models.base import IrekuaModelBase
+from irekua_database.models import Visualizer
 
 
 def visualizer_path(instance, filename):
     _, ext = os.path.splitext(filename)
     return 'visualizers/{name}_{version}.{ext}'.format(
-        name=instance.name.replace(' ', '_'),
-        version=instance.version.replace('.', '_'),
+        name=instance.visualizer.name.replace(' ', '_'),
+        version=instance.visualizer.version.replace('.', '_'),
         ext=ext)
 
 
-class Visualizer(IrekuaModelBase):
-    name = models.CharField(
-        max_length=64,
-        db_column='name',
-        verbose_name=_('name'),
-        help_text=_('Name of visualizer app'),
-        blank=False,
-        null=False)
-    version = models.CharField(
-        max_length=16,
-        db_column='version',
-        verbose_name=_('version'),
-        help_text=_('Version of visualizer app'),
+class VisualizerComponent(models.Model):
+    visualizer = models.OneToOneField(
+        Visualizer,
+        on_delete=models.CASCADE,
+        db_column='visualizer_id',
+        verbose_name=_('visualizer'),
+        help_text=_('Visualizer'),
         blank=False,
         null=False)
     javascript_file = models.FileField(
@@ -36,37 +31,33 @@ class Visualizer(IrekuaModelBase):
         help_text=_('Javascript file containing visualizer component'),
         blank=False,
         null=False)
-    repository = models.URLField(
-        db_column='repository',
-        verbose_name=_('repository'),
-        help_text=_('Link to app repository'),
-        blank=True)
 
     item_types = models.ManyToManyField(
         ItemType,
-        through='VisualizerItemType',
-        through_fields=('visualizer', 'item_type'))
+        through='VisualizerComponentItemType',
+        through_fields=('visualizer_component', 'item_type'))
 
     class Meta:
-        verbose_name = _('Visualizer')
-        verbose_name_plural = _('Visualizers')
-
-        ordering = ['-created_on']
-        unique_together = (
-            ('name', 'version'),
-        )
+        verbose_name = _('Visualizer Component')
+        verbose_name_plural = _('Visualizers Components')
 
     def __str__(self):
-        return '{}@{}'.format(self.name, self.version)
+        return str(self.visualizer)
 
 
-class VisualizerItemType(models.Model):
+class VisualizerComponentItemType(models.Model):
     item_type = models.ForeignKey(
         ItemType,
-        on_delete=models.CASCADE)
-    visualizer = models.ForeignKey(
-        'Visualizer',
-        on_delete=models.CASCADE)
+        on_delete=models.CASCADE,
+        db_column='item_type_id',
+        verbose_name=_('item type'),
+        help_text=_('Item type'))
+    visualizer_component = models.ForeignKey(
+        'VisualizerComponent',
+        on_delete=models.CASCADE,
+        db_column='visualizer_component_id',
+        verbose_name=_('visualizer component'),
+        help_text=_('Visualizer component'))
 
     is_active = models.BooleanField(
         db_column='is_active',
@@ -77,11 +68,11 @@ class VisualizerItemType(models.Model):
         null=False)
 
     class Meta:
-        verbose_name = _('VisualizerItemType')
-        verbose_name_plural = _('VisualizerItemTypes')
+        verbose_name = _('Visualizer Component Item Type')
+        verbose_name_plural = _('Visualizer Component Item Types')
 
         unique_together = (
-            ('item_type', 'visualizer'),
+            ('item_type', 'visualizer_component'),
         )
 
     def deactivate(self):
@@ -90,7 +81,7 @@ class VisualizerItemType(models.Model):
 
     def save(self, *args, **kwargs):
         if self.is_active:
-            queryset = VisualizerItemType.objects.filter(
+            queryset = VisualizerComponentItemType.objects.filter(
                 item_type=self.item_type, is_active=True)
             for entry in queryset:
                 if entry != self:

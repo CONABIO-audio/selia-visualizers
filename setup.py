@@ -15,7 +15,7 @@ setup(
     license='BSD License',
     description='Visualizer provider for Selia',
     long_description=README,
-    url='http://selia.conabio.gob.mx/',
+    url='https://github.com/CONABIO-audio/selia-visualizers',
     author='CONABIO, Gustavo Everardo Robredo Esquivelzeta, Santiago Martínez Balvanera',
     author_email='erobredo@conabio.gob.mx, smartinez@conabio.gob.mx',
     install_requires=[
