@@ -1,17 +1,13 @@
 from django.views.decorators.http import require_http_methods
-from django.shortcuts import get_object_or_404
 from django.http import JsonResponse
 
-from selia_visualizers.models import VisualizerComponentItemType
+from selia_visualizers.utils import get_visualizer as get_visualizer_instance
 
 
 @require_http_methods(["GET"])
 def get_visualizer(request):
     item_type = request.GET.get('item_type', None)
-    visualizer = get_object_or_404(
-        VisualizerComponentItemType,
-        item_type=item_type,
-        is_active=True)
+    visualizer = get_visualizer_instance(item_type)
 
     response = {
         "visualizer": visualizer.visualizer_component.visualizer.pk,
