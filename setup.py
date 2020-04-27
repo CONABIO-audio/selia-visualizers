@@ -7,6 +7,12 @@ with open(os.path.join(os.path.dirname(__file__), 'README.md')) as readme:
 # allow setup.py to be run from any path
 os.chdir(os.path.normpath(os.path.join(os.path.abspath(__file__), os.pardir)))
 
+
+version = {}
+with open("selia_visualizers/version.py") as fp:
+    exec(fp.read(), version)
+
+
 setup(
     name='selia-visualizers',
     version='0.1',
@@ -18,9 +24,7 @@ setup(
     url='https://github.com/CONABIO-audio/selia-visualizers',
     author='CONABIO, Gustavo Everardo Robredo Esquivelzeta, Santiago Martínez Balvanera',
     author_email='erobredo@conabio.gob.mx, smartinez@conabio.gob.mx',
-    install_requires=[
-        'irekua-database',
-    ],
+    install_requires=['irekua-database'],
     classifiers=[
         'Environment :: Web Environment',
         'Framework :: Django',
