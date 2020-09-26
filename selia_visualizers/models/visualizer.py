@@ -17,13 +17,6 @@ class Visualizer(base.IrekuaModelBase):
         help_text=_('Name of visualizer app'),
         blank=False,
         null=False)
-    version = models.CharField(
-        max_length=16,
-        db_column='version',
-        verbose_name=_('version'),
-        help_text=_('Version of visualizer app'),
-        blank=False,
-        null=False)
     description = models.TextField(
         db_column='description',
         verbose_name=_('description'),
