@@ -9,12 +9,13 @@ from irekua_database.utils import validate_JSON_instance
 from irekua_database.utils import simple_JSON_schema
 
 
-class Visualizer(base.IrekuaModelBase):
-    name = models.CharField(
-        max_length=64,
-        db_column='name',
-        verbose_name=_('name'),
-        help_text=_('Name of visualizer app'),
+class VisualizerVersion(base.IrekuaModelBase):
+    visualizer = models.ForeignKey(
+        'Visualizer',
+        models.CASCADE,
+        db_column='visualizer_id',
+        verbose_name=_('visualizer'),
+        help_text=_('Visualizer'),
         blank=False,
         null=False)
     version = models.CharField(
@@ -24,16 +25,6 @@ class Visualizer(base.IrekuaModelBase):
         help_text=_('Version of visualizer app'),
         blank=False,
         null=False)
-    description = models.TextField(
-        db_column='description',
-        verbose_name=_('description'),
-        help_text=_('Description of the visualizer'),
-        blank=True)
-    website = models.URLField(
-        db_column='website',
-        verbose_name=_('website'),
-        help_text=_('Link to visualizer website'),
-        blank=True)
     configuration_schema = models.JSONField(
         db_column='configuration_schema',
         verbose_name=_('configuration schema'),
@@ -44,10 +35,13 @@ class Visualizer(base.IrekuaModelBase):
         default=simple_JSON_schema)
 
     class Meta:
-        verbose_name = _('Visualizer')
-        verbose_name_plural = _('Visualizers')
+        verbose_name = _('Visualizer Version')
+        verbose_name_plural = _('Visualizer Versions')
 
-        ordering = ['-created_on']
+        ordering = ['visualizer', '-version']
+        unique_together = (
+            ('visualizer', 'version'),
+        )
 
     def validate_configuration(self, configuration):
         try:
@@ -58,6 +52,3 @@ class Visualizer(base.IrekuaModelBase):
             msg = _('Invalid visualizer configuration. Error: %(error)s')
             params = dict(error=str(error))
             raise ValidationError(msg, params=params)
-
-    def __str__(self):
-        return str(self.name)
