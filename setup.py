@@ -24,7 +24,11 @@ setup(
     url='https://github.com/CONABIO-audio/selia-visualizers',
     author='CONABIO, Gustavo Everardo Robredo Esquivelzeta, Santiago Martínez Balvanera',
     author_email='erobredo@conabio.gob.mx, smartinez@conabio.gob.mx',
-    install_requires=['irekua-database'],
+    install_requires=[
+        'irekua-database',
+        'selia-templates',
+        'djangorestframework',
+        'django-filter'],
     classifiers=[
         'Environment :: Web Environment',
         'Framework :: Django',

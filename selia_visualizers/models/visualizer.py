@@ -3,6 +3,7 @@ from django.core.exceptions import ValidationError
 from django.utils.translation import gettext_lazy as _
 
 from irekua_database.models import base
+from irekua_database.models import ItemType
 
 from irekua_database.utils import validate_JSON_schema
 from irekua_database.utils import validate_JSON_instance
@@ -35,6 +36,11 @@ class Visualizer(base.IrekuaModelBase):
         null=False,
         validators=[validate_JSON_schema],
         default=simple_JSON_schema)
+
+    item_types = models.ManyToManyField(
+        ItemType,
+        through='VisualizerItemType',
+        through_fields=('visualizer', 'item_type'))
 
     class Meta:
         verbose_name = _('Visualizer')

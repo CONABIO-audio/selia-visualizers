@@ -3,7 +3,6 @@ import os
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 
-from irekua_database.models import ItemType
 from selia_visualizers.models.visualizer_version import VisualizerVersion
 
 
@@ -23,11 +22,15 @@ class VisualizerModule(VisualizerVersion):
         help_text=_('Javascript file containing visualizer version module'),
         blank=False,
         null=False)
-
-    item_types = models.ManyToManyField(
-        ItemType,
-        through='VisualizerModuleItemType',
-        through_fields=('visualizer_module', 'item_type'))
+    is_active = models.BooleanField(
+        db_column='is_active',
+        verbose_name=_('is active'),
+        default=True,
+        blank=False,
+        null=False,
+        help_text=_(
+            'Boolean flag that indicates whether this version is '
+            'to be used as the default version of this visualizer.'))
 
     class Meta:
         verbose_name = _('Visualizer Version Module')
@@ -35,3 +38,13 @@ class VisualizerModule(VisualizerVersion):
 
     def __str__(self):
         return str(self.visualizer)
+
+    def clean(self):
+        super().clean()
+
+        if self.is_active:
+            for visualizer in VisualizerModule.objects.filter(visualizer=self.visualizer):
+                visualizer.is_active = False
+                visualizer.save()
+
+            self.is_active = True

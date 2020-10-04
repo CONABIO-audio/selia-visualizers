@@ -1,6 +1,6 @@
 import os
 
-from .visualizer_module_item_type import VisualizerModuleItemType
+from .visualizer_item_type import VisualizerItemType
 from .visualizer_module import VisualizerModule
 from .visualizer_version import VisualizerVersion
 from .visualizer import Visualizer
@@ -15,7 +15,7 @@ def visualizer_path(instance, filename):
 
 
 __all__ = [
-    'VisualizerModuleItemType',
+    'VisualizerItemType',
     'VisualizerModule',
     'visualizer_path',
     'VisualizerVersion',
