@@ -9,12 +9,13 @@ django-autocomplete-light==3.7.0.dev0
 django-crispy-forms==1.9.2
 django-filter==2.4.0
 django-widget-tweaks==1.4.8
-djangorestframework==3.12.1
+djangorestframework==3.11.1
 drf-yasg==1.17.1
 idna==2.10
 inflection==0.5.1
 irekua-database==0.1.2
 irekua-dev-settings==0.1
+irekua-permissions==0.1.2
 itypes==1.2.0
 Jinja2==3.0.0a1
 jsonschema==3.2.0

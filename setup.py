@@ -26,6 +26,7 @@ setup(
     author_email='erobredo@conabio.gob.mx, smartinez@conabio.gob.mx',
     install_requires=[
         'irekua-database',
+        'irekua-permissions',
         'selia-templates',
         'djangorestframework',
         'django-filter'],

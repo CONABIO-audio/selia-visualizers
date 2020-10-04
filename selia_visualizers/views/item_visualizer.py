@@ -1,9 +1,9 @@
 from django.shortcuts import render
-from django.shortcuts import get_object_or_404
 from django.views.generic import DetailView
 
 from irekua_database.models import Item
-# from selia_visualizers.models import VisualizerModuleItemType
+from irekua_permissions.items import items
+from selia_visualizers import utils
 
 
 class ItemVisualizerView(DetailView):
@@ -12,7 +12,9 @@ class ItemVisualizerView(DetailView):
     no_permission_template = 'selia_templates/generic/no_permission.html'
 
     def has_view_permission(self):
-        return self.request.user.is_authenticated
+        if not hasattr(self, 'object'):
+            self.object = self.get_object()
+        return items.view(self.request.user, item=self.object)
 
     def no_permission_redirect(self):
         return render(self.request, self.no_permission_template)
@@ -24,12 +26,12 @@ class ItemVisualizerView(DetailView):
         return super().get(*args, **kwargs)
 
     def get_context_data(self, *args, **kwargs):
-        # module = get_object_or_404(
-        #     VisualizerModuleItemType,
-        #     item_type=self.object.item_type,
-        #     is_active=True).visualizer_module
+        try:
+            module = utils.get_visualizer_module(self.object.item_type)
+        except Exception as error:
+            module = None
 
         return {
             **super().get_context_data(*args, **kwargs),
-            # 'module': module,
+            'module': module,
         }
