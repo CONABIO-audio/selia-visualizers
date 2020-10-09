@@ -7,8 +7,8 @@ from selia_visualizers import utils
 
 
 class ItemVisualizerView(DetailView):
-    template_name = 'selia_visualizers/visualizer.html'
     model = Item
+    template_name = 'selia_visualizers/visualizer.html'
     no_permission_template = 'selia_templates/generic/no_permission.html'
 
     def has_view_permission(self):

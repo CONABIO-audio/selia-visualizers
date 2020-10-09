@@ -43,6 +43,9 @@ class VisualizerVersion(base.IrekuaModelBase):
             ('visualizer', 'version'),
         )
 
+    def __str__(self):
+        return f'{self.visualizer.name} @ {self.version}'
+
     def validate_configuration(self, configuration):
         try:
             validate_JSON_instance(
