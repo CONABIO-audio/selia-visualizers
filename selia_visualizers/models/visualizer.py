@@ -2,15 +2,15 @@ from django.db import models
 from django.core.exceptions import ValidationError
 from django.utils.translation import gettext_lazy as _
 
-from irekua_database.models import base
+from irekua_core.models import IrekuaModelBase
+from irekua_core.utils import validate_JSON_schema
+from irekua_core.utils import validate_JSON_instance
+from irekua_core.utils import simple_JSON_schema
+
 from irekua_database.models import ItemType
 
-from irekua_database.utils import validate_JSON_schema
-from irekua_database.utils import validate_JSON_instance
-from irekua_database.utils import simple_JSON_schema
 
-
-class Visualizer(base.IrekuaModelBase):
+class Visualizer(IrekuaModelBase):
     name = models.CharField(
         max_length=64,
         db_column='name',
